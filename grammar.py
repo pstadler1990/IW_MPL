@@ -51,7 +51,9 @@ class Grammar(object):
 
                 if pCnt == len(r.tokens):
                     print ("Rule " + str(r.name) + " complete!")
-                    self.assignment(tokList[0].value, tokList[2].value)
+                    if r.name == "ASSIGNMENT_ID" or r.name == "ASSIGNMENT_VALUE":
+                        self.assignment(tokList[0].value, tokList[2].value)
+
                 else:
                     rCnt += 1
 

@@ -1,6 +1,8 @@
 import re
 import tok
+import collections
 
+nextToken = collections.namedtuple('nextToken','t tCnt')
 
 class Lexer(object):
 
@@ -87,9 +89,16 @@ class Lexer(object):
         self.scanComplete = True
 
     def next(self):
-        if self.scanComplete and (self.tokenCnt <= len(self.foundTokens)):
+        if self.scanComplete and self.hasNext():
             retTok = self.foundTokens[self.tokenCnt]
+            retCnt = self.tokenCnt
             self.tokenCnt += 1
             print ("called token: " + str(self.tokenCnt))
-            return retTok
+            return nextToken(t=retTok, tCnt=retCnt)
         return None
+
+    def reset(self, tokenCnt):
+        self.tokenCnt = tokenCnt
+
+    def hasNext(self):
+        return self.tokenCnt <= len(self.foundTokens)

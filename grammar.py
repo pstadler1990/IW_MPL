@@ -37,28 +37,42 @@ class Grammar(object):
 
     def parse(self, l):
         rCnt = 0
-        pCnt = 0
-        tokList = []
-        t = l.next()
+
+        #the lexer method .next() returns a named tuple t=token obj, tCnt=token count of token t
+        tObj = l.next()
+        t = tObj.t
+        #
+        resetCnt = tObj.tCnt
+
         for r in Rules:
+            print ("Checking rule: " + str(r.name))
+            pCnt = 0
+            tokList = []
             for tr in r.tokens:
-                print ("t: " + str(t.type) + " tr: " + tr)
-                while t.type == tr:
+                print ("t: " + str(t.typ) + " tr: " + tr)
+
+                if t.typ == tr:
                     print ("ok, getting next")
                     tokList.append(t)
-                    t = l.next()
                     pCnt+=1
-
-                if pCnt == len(r.tokens):
-                    print ("Rule " + str(r.name) + " complete!")
-                    if r.name == "ASSIGNMENT_ID" or r.name == "ASSIGNMENT_VALUE":
-                        self.assignment(tokList[0].value, tokList[2].value)
-
                 else:
+                    print("Wrong rule, checking next rule")
+                    #Reset the consumed tokens for checking with the next rule
+                    l.reset(resetCnt)
                     rCnt += 1
 
-        if rCnt == len(Rules):
-            raise Exception("Syntax error, no rule for ..")
+                if pCnt == len(r.tokens):
+                    print("Rule " + str(r.name) + " complete!")
+                    if r.name == "ASSIGNMENT_ID" or r.name == "ASSIGNMENT_VALUE":
+                        self.assignment(tokList[0].value, tokList[2].value)
+                else:
+                    t = l.next().t
+
+        if rCnt >= len(Rules):
+            raise Exception("Syntax error, no rule for token")
+
+        if l.hasNext() is not None:
+            self.parse(l)
 
     def assignment(self, identifier, value):
         print("assignment with: " + str(identifier) + " and value: " + str(value))

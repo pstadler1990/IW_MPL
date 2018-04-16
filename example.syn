@@ -1,0 +1,26 @@
+BPM: 80
+Instrument Piano[
+	Notes Intro[
+		c3 c4 c3 . c7 a b# b7 . c3 c4 .. bmaj7
+	]
+	Notes Chorus[
+		c4 c4 . c4 . cmaj7
+	]
+	Notes Outro[
+		. . . . . . . cmaj7 b# b7 c3 . c4 ....
+	]
+	IType: PIANO
+] => OSC1
+
+Oscillator OSC1[
+	Pitch: +5
+	OType: SAW
+] => OSC2
+
+Oscillator OSC2[
+	OType: SINE
+] => SPEAKER
+
+Song: Piano.Intro + Bass.Intro + Harp.Intro, Piano.Chorus,
+Piano.Chorus, Piano.Outro + Bass.Outro
+

@@ -1,3 +1,4 @@
+import tok
 """
 program:
     statement(s)
@@ -30,11 +31,62 @@ value:
 
 
 class Grammar(object):
-    pass
+
+    def __init__(self):
+        pass
+
+    def parse(self, l):
+        rCnt = 0
+        pCnt = 0
+        tokList = []
+        t = l.next()
+        for r in Rules:
+            for tr in r.tokens:
+                print ("t: " + str(t.type) + " tr: " + tr)
+                while t.type == tr:
+                    print ("ok, getting next")
+                    tokList.append(t)
+                    t = l.next()
+                    pCnt+=1
+
+                if pCnt == len(r.tokens):
+                    print ("Rule " + str(r.name) + " complete!")
+                    self.assignment(tokList[0].value, tokList[2].value)
+                else:
+                    rCnt += 1
+
+        if rCnt == len(Rules):
+            raise Exception("Syntax error, no rule for ..")
+
+    def assignment(self, identifier, value):
+        print("assignment with: " + str(identifier) + " and value: " + str(value))
+        try:
+            _identifier = str(identifier)
+            #TODO: Add both cases (assignment_id and assignment_value)
+            _value = int(value)
+        except ValueError:
+            raise Exception("Value error")
+
+        #TODO: check if variable is in predefined (global) variable stack
+        #      if not, create a new (local) variable stack
+        # set variable to value
+
+
+
 
 
 class Rule(object):
-    pass
+
+    def __init__(self, name, tokens):
+        self.name = name
+        self.tokens = tokens
+
+
+Rules = [
+    Rule("ASSIGNMENT_ID", [tok.IDENTIFIER, tok.ASSIGN, tok.IDENTIFIER]),
+    Rule("ASSIGNMENT_VALUE", [tok.IDENTIFIER, tok.ASSIGN, tok.VALUE]),
+]
+
 
 
 #Rule for Statement: IDENTIFIER ; ASSIGN ; VALUE | NAME

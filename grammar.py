@@ -65,14 +65,15 @@ class Grammar(object):
                     print("Rule " + str(r.name) + " complete!")
                     if r.name == "ASSIGNMENT_ID" or r.name == "ASSIGNMENT_VALUE":
                         self.assignment(tokList[0].value, tokList[2].value)
+
+                    if l.hasNext() is not None:
+                        self.parse(l)
                 else:
                     t = l.next().t
 
         if rCnt >= len(Rules):
             raise Exception("Syntax error, no rule for token")
 
-        if l.hasNext() is not None:
-            self.parse(l)
 
     def assignment(self, identifier, value):
         print("assignment with: " + str(identifier) + " and value: " + str(value))
@@ -101,8 +102,12 @@ class Rule(object):
 Rules = [
     Rule("ASSIGNMENT_ID", [tok.IDENTIFIER, tok.ASSIGN, tok.IDENTIFIER]),
     Rule("ASSIGNMENT_VALUE", [tok.IDENTIFIER, tok.ASSIGN, tok.VALUE]),
+    Rule("BLOCK", [tok.KEYWORD, tok.IDENTIFIER, tok.BLOCK_OPEN, tok.STATEMENT, tok.BLOCK_CLOSE]),
 ]
-
+#nstrument Piano [
+            #Notes Intro [
+            #    c3 c4 c3 . c7 a b# b7 . c3 c4 .. bmaj7
+            #]
 
 
 #Rule for Statement: IDENTIFIER ; ASSIGN ; VALUE | NAME

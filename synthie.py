@@ -23,8 +23,8 @@ class Synthie:
             IType: PIANO
         ]""")
 
-        g = grammar.Grammar()
-        g.parse(l)
+        g = grammar.Grammar(l)
+        g.parse()
 
 
 

@@ -1,3 +1,7 @@
+#TODO:
+# - Nested blocks funktionieren noch nicht! -> er geht zwar in die blöcke, kommt aber dann beim rücksprung mit dem block_closed durcheinander
+
+
 import tok
 """
 program:
@@ -32,91 +36,82 @@ value:
 
 class Grammar(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, lexer):
+        self.lexer = lexer
+        self.current_token = self.lexer.next()
+        self.stack = {}
 
-    def parse(self, l):
-        rCnt = 0
+    def parse(self):
+        self.progm()
 
-        #the lexer method .next() returns a named tuple t=token obj, tCnt=token count of token t
-        tObj = l.next()
-        t = tObj.t
-        #
-        resetCnt = tObj.tCnt
-
-        for r in Rules:
-            print ("Checking rule: " + str(r.name))
-            pCnt = 0
-            tokList = []
-            for tr in r.tokens:
-                print ("t: " + str(t.typ) + " tr: " + tr)
-
-                if t.typ == tr:
-                    print ("ok, getting next")
-                    tokList.append(t)
-                    pCnt+=1
-                else:
-                    print("Wrong rule, checking next rule")
-                    #Reset the consumed tokens for checking with the next rule
-                    l.reset(resetCnt)
-                    rCnt += 1
-
-                if pCnt == len(r.tokens):
-                    print("Rule " + str(r.name) + " complete!")
-                    if r.name == "ASSIGNMENT_ID" or r.name == "ASSIGNMENT_VALUE":
-                        self.assignment(tokList[0].value, tokList[2].value)
-
-                    if l.hasNext() is not None:
-                        self.parse(l)
-                else:
-                    t = l.next().t
-
-        if rCnt >= len(Rules):
-            raise Exception("Syntax error, no rule for token")
+    def progm(self):
+        while self.lexer.hasNext():
+            if self.current_token.token.typ == tok.IDENTIFIER:
+                self.statement()
+            elif self.current_token.token.typ == tok.KEYWORD:
+                self.block()
+            else:
+                print("error")
+                break
+        print("End of file")
 
 
-    def assignment(self, identifier, value):
-        print("assignment with: " + str(identifier) + " and value: " + str(value))
-        try:
-            _identifier = str(identifier)
-            #TODO: Add both cases (assignment_id and assignment_value)
-            _value = int(value)
-        except ValueError:
-            raise Exception("Value error")
+    def statement(self):
+        #statement:
+        #   identifier assign value
+        #   identifier assign identifier
+        token_identifier = str(self.current_token.token.value)
+        self.current_token = self.lexer.eat(self.current_token.token.typ, tok.IDENTIFIER)
+        self.current_token = self.lexer.eat(self.current_token.token.typ, tok.ASSIGN)
 
-        #TODO: check if variable is in predefined (global) variable stack
-        #      if not, create a new (local) variable stack
-        # set variable to value
+        if self.current_token.token.typ == tok.VALUE:
+            token_value = self.current_token.token.value
+            self.current_token = self.lexer.eat(self.current_token.token.typ, tok.VALUE)
+        elif self.current_token.token.typ == tok.IDENTIFIER:
+            self.current_token = self.lexer.eat(self.current_token.token.typ, tok.IDENTIFIER)
+        else:
+            print("ERROR in statement!")
 
-
-
-
-
-class Rule(object):
-
-    def __init__(self, name, tokens):
-        self.name = name
-        self.tokens = tokens
+        self.stack[token_identifier] = token_value
 
 
-Rules = [
-    Rule("ASSIGNMENT_ID", [tok.IDENTIFIER, tok.ASSIGN, tok.IDENTIFIER]),
-    Rule("ASSIGNMENT_VALUE", [tok.IDENTIFIER, tok.ASSIGN, tok.VALUE]),
-    Rule("BLOCK", [tok.KEYWORD, tok.IDENTIFIER, tok.BLOCK_OPEN, tok.STATEMENT, tok.BLOCK_CLOSE]),
-]
-#nstrument Piano [
-            #Notes Intro [
-            #    c3 c4 c3 . c7 a b# b7 . c3 c4 .. bmaj7
-            #]
+    def block(self):
+        #block:
+        #    keyword identifier[ statement(s) ]
+        #    keyword identifier[ block(s) ]
+        #    keyword identifier[ note_identifier(s) ]
+        self.current_token = self.lexer.eat(self.current_token.token.typ, tok.KEYWORD)
+        self.current_token = self.lexer.eat(self.current_token.token.typ, tok.IDENTIFIER)
+        self.current_token = self.lexer.eat(self.current_token.token.typ, tok.BLOCK_OPEN)
+
+        print("Opened block")
+
+        # Case 1: keyword identifier[ statement(s) ]
+        if self.current_token.token.typ == tok.IDENTIFIER:
+            self.statement()
+            self.current_token = self.lexer.eat(self.current_token.token.typ, tok.BLOCK_CLOSE)
+        # Case 2: keyword identifier[ block(s) ]
+        elif self.current_token.token.typ == tok.KEYWORD:
+            self.block()
+            self.current_token = self.lexer.eat(self.current_token.token.typ, tok.BLOCK_CLOSE)
+        elif self.current_token.token.typ == tok.NOTE_IDENTIFIER:
+            self.notes()
+            self.current_token = self.lexer.eat(self.current_token.token.typ, tok.BLOCK_CLOSE)
+        else:
+            print("ERROR at block!")
 
 
-#Rule for Statement: IDENTIFIER ; ASSIGN ; VALUE | NAME
-#if value: check, if there's a variable in the variable stack with the name of IDENTIFIER
-    #if yes: set the variable to the new VALUE
-    #if no: add the new variable IDENTIFIER to the variable stack and set the value to 0
-#if name: check, if there's a variable in the variable stack with the name OF NAME
-    # if yes: get the NAME's value and set the IDENTIFIER's value to NAME's value
-    # if no: raise exception: Unknown variable NAME
+        #print("Closed block")
 
 
-#Rule for Keyword Instrument: KEYWORD Instrument ; IDENTIFIER ; BLOCK_OPEN; STATEMENT(S) | BLOCK(S); BLOCK_CLOSE
+    def notes(self):
+        note_list = []
+        while True:
+            current_note = str(self.current_token.token.value)
+            current_token = self.lexer.eat(self.current_token.token.typ, tok.NOTE_IDENTIFIER)
+            if current_token is not None:
+                note_list.append(current_note)
+                self.current_token = current_token
+            else:
+                break
+

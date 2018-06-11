@@ -3,7 +3,6 @@ import grammar
 
 #TODO: - Add stack with predefined variables, like BPM
 #TODO: - Add rules and grammar (each slot needs to be a specific type)
-#TODO: - Add function pointer, call from rule (to remove if-/else path)
 
 class Synthie:
 

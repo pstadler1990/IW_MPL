@@ -1,6 +1,4 @@
-#TODO:
-# - Nested blocks funktionieren noch nicht! -> er geht zwar in die blöcke, kommt aber dann beim rücksprung mit dem block_closed durcheinander
-
+#TODO: Identifiers like Piano are not recognized as a value yet
 
 import tok
 """
@@ -60,6 +58,7 @@ class Grammar(object):
         #statement:
         #   identifier assign value
         #   identifier assign identifier
+        token_value = None
         token_identifier = str(self.current_token.token.value)
         self.current_token = self.lexer.eat(self.current_token.token.typ, tok.IDENTIFIER)
         self.current_token = self.lexer.eat(self.current_token.token.typ, tok.ASSIGN)
@@ -68,6 +67,7 @@ class Grammar(object):
             token_value = self.current_token.token.value
             self.current_token = self.lexer.eat(self.current_token.token.typ, tok.VALUE)
         elif self.current_token.token.typ == tok.IDENTIFIER:
+            #TODO: Piano is not a value yet
             self.current_token = self.lexer.eat(self.current_token.token.typ, tok.IDENTIFIER)
         else:
             print("ERROR in statement!")
@@ -86,22 +86,18 @@ class Grammar(object):
 
         print("Opened block")
 
-        # Case 1: keyword identifier[ statement(s) ]
-        if self.current_token.token.typ == tok.IDENTIFIER:
-            self.statement()
-            self.current_token = self.lexer.eat(self.current_token.token.typ, tok.BLOCK_CLOSE)
-        # Case 2: keyword identifier[ block(s) ]
-        elif self.current_token.token.typ == tok.KEYWORD:
-            self.block()
-            self.current_token = self.lexer.eat(self.current_token.token.typ, tok.BLOCK_CLOSE)
-        elif self.current_token.token.typ == tok.NOTE_IDENTIFIER:
-            self.notes()
-            self.current_token = self.lexer.eat(self.current_token.token.typ, tok.BLOCK_CLOSE)
-        else:
-            print("ERROR at block!")
+        while self.current_token.token.typ in (tok.IDENTIFIER, tok.KEYWORD, tok.NOTE_IDENTIFIER):
+            # Case 1: keyword identifier[ statement(s) ]
+            if self.current_token.token.typ == tok.IDENTIFIER:
+                self.statement()
+            # Case 2: keyword identifier[ block(s) ]
+            elif self.current_token.token.typ == tok.KEYWORD:
+                self.block()
+            elif self.current_token.token.typ == tok.NOTE_IDENTIFIER:
+                self.notes()
 
-
-        #print("Closed block")
+        self.current_token = self.lexer.eat(self.current_token.token.typ, tok.BLOCK_CLOSE)
+        print("Closed block")
 
 
     def notes(self):

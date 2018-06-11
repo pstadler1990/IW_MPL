@@ -103,7 +103,7 @@ class Lexer(object):
         self.tokenCnt = tokenCnt
 
     def hasNext(self):
-        return self.tokenCnt <= len(self.foundTokens)
+        return self.tokenCnt < len(self.foundTokens)
 
     def eat(self, current_token, token_type):
         if self.scanComplete and self.hasNext():

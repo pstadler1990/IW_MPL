@@ -5,9 +5,9 @@ Important notes
 ===============
 Variable names MUST start with a CAPITAL letter!
 
-Some examples of valid variable names in IW_MP:
-`MyVariable: 3`
-`NEWTYPE: BASS`
+Some examples of valid variable names in IW_MPL:
+`MyVariable`
+`NEWTYPE`
 
 Invalid variable names are note identifiers, keywords and variables not starting with a capital letter and/or containing
 other characters than `a-z A-Z 0-9 _`

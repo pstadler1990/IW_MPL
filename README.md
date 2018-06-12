@@ -13,11 +13,11 @@ Invalid variable names are note identifiers, keywords and variables not starting
 other characters than `a-z A-Z 0-9 _`
 
 Examples of invalid variable names:
-`myVariable: 3`
-`c3: 4`
+`myVariable`
+`c3`
 
 It is also forbidden to use keywords as the beginning of a variable name, like:
-`Instrument2: 4`
+`Instrument2`
 
 ## Assigning values to variables
 You can assign any numeric values to a variable:

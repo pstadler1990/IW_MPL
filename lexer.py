@@ -21,7 +21,7 @@ class Lexer(object):
 
     tokens = {
         "WHITESPACE": r'[ \n\t\r]',
-        "KEYWORD": r'(Instrument|Notes|Oscillator|Song)',
+        "KEYWORD": r'(Instrument|Notes|Oscillator|Song|Play)',
         "ASSIGN": r'\:',
         "ADD": r'\+',
         "SEPARATE": r'\,',

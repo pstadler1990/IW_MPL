@@ -10,10 +10,14 @@ StatementReturn = collections.namedtuple('StatementReturn', 'identifier value')
 program:
     statement(s)
     block(s)
+    command(s)
 
 statement:
     identifier assign value
     identifier assign identifier
+    
+command:
+    keyword identifier
 
 block:
     keyword identifier [ statement(s) ]
@@ -60,6 +64,7 @@ class Grammar(object):
         self.stack["PIANO"] = 1
         self.stack["BASS"] = 2
         self.stack["SYNTHESIZER"] = 3
+        self.stack["PLAY_SONG"] = ""
 
     def parse(self):
         self.progm()
@@ -72,6 +77,14 @@ class Grammar(object):
                 identifier, value = self.statement()
                 self.stack[identifier] = value
             elif self.current_token.token.typ == tok.KEYWORD:
+                """Keyword Identifier"""
+                if self.current_token.token.value == 'Play':
+                    self.current_token = self.lexer.eat(self.current_token.token.typ, tok.KEYWORD)
+                    song_name = str(self.current_token.token.value)
+                    self.stack["PLAY_SONG"] = song_name
+                    self.current_token = self.lexer.eat(self.current_token.token.typ, tok.IDENTIFIER)
+                    continue
+                """Keyword Identifier [ block ]"""
                 if not self.block():
                     errors = True
                     break
@@ -91,6 +104,7 @@ class Grammar(object):
         #   identifier assign identifier
         token_value = None
         token_identifier = str(self.current_token.token.value)
+
         self.current_token = self.lexer.eat(self.current_token.token.typ, tok.IDENTIFIER)
         self.current_token = self.lexer.eat(self.current_token.token.typ, tok.ASSIGN)
 

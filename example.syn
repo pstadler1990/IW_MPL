@@ -1,3 +1,6 @@
+
+Play Example
+
 ;Assign global variables
 BPM: 80
     Instrument Piano [
@@ -32,4 +35,3 @@ Song Example [
 
 Song Beethoven [ Piano.Outro + Harp.Intro, Harp.Intro, Harp.Intro + Piano.Intro, Piano.Outro ]
 
-;Play Example

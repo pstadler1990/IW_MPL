@@ -1,26 +1,27 @@
 BPM: 80
-Instrument Piano[
-	Notes Intro[
-		c3 c4 c3 . c7 a b# b7 . c3 c4 .. bmaj7
-	]
-	Notes Chorus[
-		c4 c4 . c4 . cmaj7
-	]
-	Notes Outro[
-		. . . . . . . cmaj7 b# b7 c3 . c4 ....
-	]
-	IType: PIANO
-] => OSC1
+    Instrument Piano [
+        Notes Intro [
+            c3 c4 c3 . c7 a b# b7 . c3 c4 .. bmaj7
+        ]
+        Notes Chorus [
+            c4 c4 . c4 . cmaj7
+        ]
+        Notes Outro [
+            . . . . . . . cmaj7 b# b7 c3 . c4 ....
+        ]
+        IType: PIANO
+        Horst: 3
+    ]
 
-Oscillator OSC1[
-	Pitch: +5
-	OType: SAW
-] => OSC2
+    Horst: 3
+    Typ_2: BASS
+    MYVARIABLE: Horst
 
-Oscillator OSC2[
-	OType: SINE
-] => SPEAKER
+    Instrument Harp [
+        Notes Intro [
+            c3 c3 c4 c4 c7
+        ]
+        IType: Typ_2
+    ]
 
-Song: Piano.Intro + Bass.Intro + Harp.Intro, Piano.Chorus,
-Piano.Chorus, Piano.Outro + Bass.Outro
 

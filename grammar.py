@@ -1,5 +1,3 @@
-#TODO: Identifiers like Piano are not recognized as a value yet
-
 import tok
 from instrument import Instrument
 import collections
@@ -65,7 +63,6 @@ class Grammar(object):
                     errors = True
                     break
             else:
-                print("error")
                 errors = True
                 break
         if not errors:
@@ -96,10 +93,6 @@ class Grammar(object):
             else:
                 token_value = tmp_value
             self.current_token = self.lexer.eat(self.current_token.token.typ, tok.IDENTIFIER)
-        else:
-            print("ERROR in statement!")
-            return False
-
         return StatementReturn(identifier=token_identifier, value=token_value)
 
     def block(self):

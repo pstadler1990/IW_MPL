@@ -9,7 +9,7 @@ class Lexer(object):
 
     matchExpr = {
         "WHITESPACE": r'[ \n\t\r]',
-        "NAME": r'[a-zA-Z0-9\.#]',
+        "NAME": r'[a-zA-Z0-9\.#_]',
         "ASSIGN": r'\:',
         "BLOCK_OPEN": r'\[',
         "BLOCK_CLOSE": r']'
@@ -30,10 +30,8 @@ class Lexer(object):
     foundTokens = []
     scanComplete = False
 
-
     def __init__(self):
         pass
-
 
     def scan(self, inputString=""):
         t = 0

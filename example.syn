@@ -27,8 +27,7 @@ BPM: 80
     ]
 
 Song Example [
-    Piano.Intro + Harp.Intro + Harp.Chorus, Harp.Intro, Piano.Chorus + Piano.Outro
+    Piano.Intro + Harp.Intro + Harp.Intro, Harp.Intro, Piano.Chorus + Piano.Outro
 ]
 
 ;Play Example
-

@@ -53,7 +53,7 @@ class Grammar(object):
         self.lexer = lexer
         self.current_token = self.lexer.next()
         self.stack = {}
-        self.instrument_stack = []
+        self.instrument_stack = {}
         self.song_stack = {}
         self.current_local_stack_obj = None
         """Push important constants on the global stack"""
@@ -86,7 +86,7 @@ class Grammar(object):
             print(self.instrument_stack)
 
     def statement(self):
-        #statement:
+        # statement:
         #   identifier assign value
         #   identifier assign identifier
         token_value = None
@@ -109,7 +109,7 @@ class Grammar(object):
         return StatementReturn(identifier=token_identifier, value=token_value)
 
     def block(self):
-        #block:
+        # block:
         #    keyword identifier[ statement(s) ]
         #    keyword identifier[ block(s) ]
         #    keyword identifier[ note_identifier(s) ]
@@ -123,8 +123,7 @@ class Grammar(object):
 
         if block_type == 'Instrument':
             obj = Instrument()
-            obj.name = local_identifier
-            self.instrument_stack.append(obj)
+            self.instrument_stack[local_identifier] = obj
             self.current_local_stack_obj = obj
         elif block_type == 'Song':
             obj = Song()
@@ -152,7 +151,7 @@ class Grammar(object):
                 music_list = self.music()
                 if music_list is not None:
                     if self.current_local_stack_obj is not None:
-                        self.current_local_stack_obj.instruments = music_list
+                        self.current_local_stack_obj.pieces = music_list
 
         self.current_token = self.lexer.eat(self.current_token.token.typ, tok.BLOCK_CLOSE)
         return True
@@ -175,14 +174,27 @@ class Grammar(object):
         cur_index = 0
         while True:
             current_music_piece = str(self.current_token.token.value)
+
             if self.current_token.token.typ in (tok.MUSIC_PIECE, tok.ADD, tok.SEPARATE):
                 if self.current_token.token.typ == tok.MUSIC_PIECE:
+                    """Check, if the music piece exists in the global context, else quit and print an error"""
+                    tmp = current_music_piece.split(".")
+                    tmp_instrument = tmp[0]
+                    tmp_piece = tmp[1]
+
+                    if not self.lookup_piece(tmp_instrument, tmp_piece):
+                        print("Error, unknown music piece and/or instrument")
+                        self.current_token = self.lexer.eat(self.current_token.token.typ, tok.MUSIC_PIECE)
+                        break
+
                     current_token = self.lexer.eat(self.current_token.token.typ, tok.MUSIC_PIECE)
                 elif self.current_token.token.typ == tok.ADD:
+                    """A plus sign adds two (or more) music pieces into the same row (= played in parallel)"""
                     current_token = self.lexer.eat(self.current_token.token.typ, tok.ADD)
                     self.current_token = current_token
                     continue
                 else:
+                    """A comma separates the current piece and adds a new row to the music_list"""
                     current_token = self.lexer.eat(self.current_token.token.typ, tok.SEPARATE)
                     cur_index += 1
                     music_list.append(cur_index)
@@ -203,3 +215,11 @@ class Grammar(object):
     def lookup_local_var(self, identifier):
         if self.current_local_stack_obj is not None:
             return self.current_local_stack_obj.variables.get(identifier)
+
+    def lookup_piece(self, instrument, piece):
+        try:
+            for i in self.instrument_stack[instrument].notes:
+                if i == piece:
+                    return True
+        except Exception:
+            return False

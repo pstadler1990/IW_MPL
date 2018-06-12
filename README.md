@@ -19,8 +19,7 @@ Examples of invalid variable names:
 It is also forbidden to use keywords as the beginning of a variable name, like:
 `Instrument2: 4`
 
-Assigning values to variables
-*****************************
+## Assigning values to variables
 You can assign any numeric values to a variable:
 `MyVar: 5`
 
@@ -30,8 +29,7 @@ MyOtherVar will contain the value of MyVar, so 5.
 
 Currently, IW_MPL only supports numeric values for its variables.
 
-Constants
-*********
+## Constants
 There are some constant values already assigned:
 `PIANO = 1`
 `BASS = 2`

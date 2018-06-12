@@ -11,7 +11,8 @@ BPM: 80
             . . . . . . . cmaj7 b# b7 c3 . c4 ....
         ]
         IType: PIANO    ;set the input type to be a piano
-        Horst: 3
+        MyVar: 3        ;MyVar is a local variable and will only be assigned to the current Instrument
+        BPM: 111
     ]
 
     Horst: 3
@@ -25,4 +26,9 @@ BPM: 80
         IType: Typ_2
     ]
 
+Song Example [
+    Piano.Intro + Harp.Intro + Harp.Chorus, Harp.Intro, Piano.Chorus + Piano.Outro
+]
+
+;Play Example
 

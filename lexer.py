@@ -10,7 +10,10 @@ class Lexer(object):
     matchExpr = {
         "WHITESPACE": r'[ \n\t\r]',
         "NAME": r'[a-zA-Z0-9\.#_]',
+        "MUSIC_PIECE": r'[a-zA-Z0-9\._\+]',
         "ASSIGN": r'\:',
+        "ADD": r'\+',
+        "SEPARATE": r'\,',
         "BLOCK_OPEN": r'\[',
         "BLOCK_CLOSE": r']',
         "COMMENT": r';.*'
@@ -18,13 +21,16 @@ class Lexer(object):
 
     tokens = {
         "WHITESPACE": r'[ \n\t\r]',
-        "KEYWORD": r'(Instrument|Notes|Oscillator)',
+        "KEYWORD": r'(Instrument|Notes|Oscillator|Song)',
         "ASSIGN": r'\:',
+        "ADD": r'\+',
+        "SEPARATE": r'\,',
         "VALUE": r'([0-9])',
         "BLOCK_OPEN": r'\[',
         "BLOCK_CLOSE": r'\]',
-        "IDENTIFIER": r'[a-zA-Z_][a-zA-Z_0-9]*',
-        "NOTE_IDENTIFIER": r'(\.+)|([a-z]([0-9]|#|(maj|min)[0-9])?)'
+        "IDENTIFIER": r'[a-zA-Z_][a-zA-Z_0-9]+',
+        "NOTE_IDENTIFIER": r'(\.+)|([a-z]([0-9]|#|(maj|min)[0-9])?)',
+        "MUSIC_PIECE": r'([a-zA-Z_][a-zA-Z_0-9]+\.[a-zA-Z_][a-zA-Z_0-9]+)'
     }
 
     tokenCnt = 0
@@ -50,6 +56,7 @@ class Lexer(object):
                 while c is not '\n':
                     c = inputString[t]
                     t += 1
+                t -= 1
 
             elif re.match(self.matchExpr.get("NAME"), str(c)):
 
@@ -63,6 +70,8 @@ class Lexer(object):
                     self.foundTokens.append(tok.Tok(tok.VALUE, tokn))
                 elif re.match(self.tokens.get("NOTE_IDENTIFIER"), tokn):
                     self.foundTokens.append(tok.Tok(tok.NOTE_IDENTIFIER, tokn))
+                elif re.match(self.tokens.get("MUSIC_PIECE"), tokn):
+                    self.foundTokens.append(tok.Tok(tok.MUSIC_PIECE, tokn))
                 elif re.match(self.tokens.get("IDENTIFIER"), tokn):
                     self.foundTokens.append(tok.Tok(tok.IDENTIFIER, tokn))
                 else:
@@ -73,6 +82,12 @@ class Lexer(object):
 
             elif re.match(self.matchExpr.get("ASSIGN"), str(c)):
                 self.foundTokens.append(tok.Tok(tok.ASSIGN, tokn))
+
+            elif re.match(self.matchExpr.get("ADD"), str(c)):
+                self.foundTokens.append(tok.Tok(tok.ADD, tokn))
+
+            elif re.match(self.matchExpr.get("SEPARATE"), str(c)):
+                self.foundTokens.append(tok.Tok(tok.SEPARATE, tokn))
 
             elif re.match(self.matchExpr.get("BLOCK_OPEN"), str(c)):
                 blockLevel += 1

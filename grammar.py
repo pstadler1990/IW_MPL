@@ -2,6 +2,8 @@ import tok
 from instrument import Instrument
 import collections
 
+from song import Song
+
 StatementReturn = collections.namedtuple('StatementReturn', 'identifier value')
 
 """
@@ -17,9 +19,10 @@ block:
     keyword identifier [ statement(s) ]
     keyword identifier [ block(s) ]
     keyword identifier [ note_identifier(s) ]
+    keyword [ music_piece_list ]
 
 keyword:
-    (Instrument|Notes|Oscillator)
+    (Instrument|Notes|Oscillator|Song)
 
 identifier:
     [a-zA-Z_][a-zA-Z_0-9]*
@@ -32,6 +35,15 @@ note_identifier:
 
 value:
     ([0-9])
+    
+music_piece_list:
+    music_piece 
+    music_piece_list + music_piece_list
+    music_piece_list, music_piece_list
+    
+music_piece:
+    ([a-zA-Z_][a-zA-Z_0-9]+\.[a-zA-Z_][a-zA-Z_0-9]+)
+
 """
 
 
@@ -42,6 +54,7 @@ class Grammar(object):
         self.current_token = self.lexer.next()
         self.stack = {}
         self.instrument_stack = []
+        self.song_stack = {}
         self.current_local_stack_obj = None
         """Push important constants on the global stack"""
         self.stack["PIANO"] = 1
@@ -110,13 +123,18 @@ class Grammar(object):
 
         if block_type == 'Instrument':
             obj = Instrument()
+            obj.name = local_identifier
             self.instrument_stack.append(obj)
+            self.current_local_stack_obj = obj
+        elif block_type == 'Song':
+            obj = Song()
+            self.song_stack[local_identifier] = obj
             self.current_local_stack_obj = obj
         elif block_type == 'Oscillator':
             print("Error. This instrument is not supported yet..")
             return False
 
-        while self.current_token.token.typ in (tok.IDENTIFIER, tok.KEYWORD, tok.NOTE_IDENTIFIER):
+        while self.current_token.token.typ in (tok.IDENTIFIER, tok.KEYWORD, tok.NOTE_IDENTIFIER, tok.MUSIC_PIECE):
             # Case 1: keyword identifier[ statement(s) ]
             if self.current_token.token.typ == tok.IDENTIFIER:
                 identifier, value = self.statement()
@@ -130,6 +148,11 @@ class Grammar(object):
                 if notelist is not None:
                     if self.current_local_stack_obj is not None:
                         self.current_local_stack_obj.notes[local_identifier] = notelist
+            elif self.current_token.token.typ == tok.MUSIC_PIECE:
+                music_list = self.music()
+                if music_list is not None:
+                    if self.current_local_stack_obj is not None:
+                        self.current_local_stack_obj.instruments = music_list
 
         self.current_token = self.lexer.eat(self.current_token.token.typ, tok.BLOCK_CLOSE)
         return True
@@ -145,6 +168,34 @@ class Grammar(object):
             else:
                 break
         return note_list
+
+    def music(self):
+        music_list = [[]]
+        music_list.append(0)
+        cur_index = 0
+        while True:
+            current_music_piece = str(self.current_token.token.value)
+            if self.current_token.token.typ in (tok.MUSIC_PIECE, tok.ADD, tok.SEPARATE):
+                if self.current_token.token.typ == tok.MUSIC_PIECE:
+                    current_token = self.lexer.eat(self.current_token.token.typ, tok.MUSIC_PIECE)
+                elif self.current_token.token.typ == tok.ADD:
+                    current_token = self.lexer.eat(self.current_token.token.typ, tok.ADD)
+                    self.current_token = current_token
+                    continue
+                else:
+                    current_token = self.lexer.eat(self.current_token.token.typ, tok.SEPARATE)
+                    cur_index += 1
+                    music_list.append(cur_index)
+                    music_list[cur_index] = []
+                    self.current_token = current_token
+                    continue
+
+                if current_token is not None:
+                    music_list[cur_index].append(current_music_piece)
+                    self.current_token = current_token
+            else:
+                break
+        return music_list
 
     def lookup_global_var(self, identifier):
         return self.stack.get(identifier)

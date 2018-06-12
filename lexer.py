@@ -12,7 +12,8 @@ class Lexer(object):
         "NAME": r'[a-zA-Z0-9\.#_]',
         "ASSIGN": r'\:',
         "BLOCK_OPEN": r'\[',
-        "BLOCK_CLOSE": r']'
+        "BLOCK_CLOSE": r']',
+        "COMMENT": r';.*'
     }
 
     tokens = {
@@ -44,6 +45,11 @@ class Lexer(object):
 
             if c.isspace():
                 pass
+
+            elif re.match(self.matchExpr.get("COMMENT"), str(c)):
+                while c is not '\n':
+                    c = inputString[t]
+                    t += 1
 
             elif re.match(self.matchExpr.get("NAME"), str(c)):
 

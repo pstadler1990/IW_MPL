@@ -1,3 +1,4 @@
+;Assign global variables
 BPM: 80
     Instrument Piano [
         Notes Intro [
@@ -9,7 +10,7 @@ BPM: 80
         Notes Outro [
             . . . . . . . cmaj7 b# b7 c3 . c4 ....
         ]
-        IType: PIANO
+        IType: PIANO    ;set the input type to be a piano
         Horst: 3
     ]
 

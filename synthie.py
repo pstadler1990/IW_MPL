@@ -6,6 +6,7 @@ import sys
 #TODO: Would be nice to have variables for notes as well, i.e.  my_riff: [c3 c4 c3 . c4]
 #TODO:                                                          Notes Intro [ my_riff ]
 
+
 class Synthie:
 
     def __init__(self, file):

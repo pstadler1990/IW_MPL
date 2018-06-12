@@ -38,3 +38,12 @@ There are some constant values already assigned:
 These constants can be used as a variable for your instrument's IType variable:
 `IType: PIANO`
 assigns the piano instrument to your current instrument block.
+
+## Comments
+You can write comments by using a semicolon.
+
+Note: The comment reaches until the next line break, so any
+code after a comment will also be ignored!
+
+Example comment:
+`BPM: 80    ;This is my example comment on this variable assignment`

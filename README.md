@@ -47,3 +47,14 @@ code after a comment will also be ignored!
 
 Example comment:
 `BPM: 80    ;This is my example comment on this variable assignment`
+
+## Arranging songs
+To create a song, you have to arrange a sequence of music pieces together. This can be done with the Song keyword:
+
+`Song Example [
+    Piano.Intro + Harp.Intro, Harp.Intro, Piano.Chorus + Piano.Outro
+]`
+
+where a plus sign (+) plays multiple pieces in parallel, while a comma (,) starts a new sequence.
+
+You refer to a specific music piece by writing the instrument's name and the name of the notelist, concatenated by a dot (.).

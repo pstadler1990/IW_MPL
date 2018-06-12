@@ -30,4 +30,8 @@ Song Example [
     Piano.Intro + Harp.Intro + Harp.Intro, Harp.Intro, Piano.Chorus + Piano.Outro
 ]
 
+Song Beethoven [
+    Piano.Outro + Harp.Intro, Harp.Intro, Harp.Intro + Piano.Intro, Piano.Outro
+]
+
 ;Play Example

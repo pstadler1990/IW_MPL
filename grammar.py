@@ -1,6 +1,11 @@
 #TODO: Identifiers like Piano are not recognized as a value yet
 
 import tok
+from instrument import Instrument
+import collections
+
+StatementReturn = collections.namedtuple('StatementReturn', 'identifier value')
+
 """
 program:
     statement(s)
@@ -38,6 +43,7 @@ class Grammar(object):
         self.lexer = lexer
         self.current_token = self.lexer.next()
         self.stack = {}
+        self.instrument_stack = []
 
     def parse(self):
         self.progm()
@@ -45,7 +51,9 @@ class Grammar(object):
     def progm(self):
         while self.lexer.hasNext():
             if self.current_token.token.typ == tok.IDENTIFIER:
-                self.statement()
+                """Add or update a global variable"""
+                identifier, value = self.statement()
+                self.stack[identifier] = value
             elif self.current_token.token.typ == tok.KEYWORD:
                 self.block()
             else:
@@ -53,6 +61,8 @@ class Grammar(object):
                 break
         print("End of file")
 
+        print(self.stack)
+        print(self.instrument_stack)
 
     def statement(self):
         #statement:
@@ -72,33 +82,40 @@ class Grammar(object):
         else:
             print("ERROR in statement!")
 
-        self.stack[token_identifier] = token_value
-
+        return StatementReturn(identifier=token_identifier, value=token_value)
 
     def block(self):
         #block:
         #    keyword identifier[ statement(s) ]
         #    keyword identifier[ block(s) ]
         #    keyword identifier[ note_identifier(s) ]
+        block_type = self.current_token.token.value
+
         self.current_token = self.lexer.eat(self.current_token.token.typ, tok.KEYWORD)
         self.current_token = self.lexer.eat(self.current_token.token.typ, tok.IDENTIFIER)
         self.current_token = self.lexer.eat(self.current_token.token.typ, tok.BLOCK_OPEN)
 
-        print("Opened block")
+        print("Opened block " + str(block_type))
+
+        if block_type == 'Instrument':
+            obj = Instrument()
+            self.instrument_stack.append(obj)
 
         while self.current_token.token.typ in (tok.IDENTIFIER, tok.KEYWORD, tok.NOTE_IDENTIFIER):
             # Case 1: keyword identifier[ statement(s) ]
             if self.current_token.token.typ == tok.IDENTIFIER:
-                self.statement()
+                identifier, value = self.statement()
+                if obj is not None:
+                    obj.variables[identifier] = value
             # Case 2: keyword identifier[ block(s) ]
             elif self.current_token.token.typ == tok.KEYWORD:
                 self.block()
             elif self.current_token.token.typ == tok.NOTE_IDENTIFIER:
                 self.notes()
+                #TODO: obj.notes.append(self.notes())
 
         self.current_token = self.lexer.eat(self.current_token.token.typ, tok.BLOCK_CLOSE)
         print("Closed block")
-
 
     def notes(self):
         note_list = []
@@ -110,4 +127,4 @@ class Grammar(object):
                 self.current_token = current_token
             else:
                 break
-
+        # TODO: notes() must return a tuple of identifier and notelist (=> is then used in the enclosing block method)

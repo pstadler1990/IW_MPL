@@ -1,8 +1,7 @@
 import lexer
 import grammar
 
-#TODO: - Add stack with predefined variables, like BPM
-#TODO: - Add rules and grammar (each slot needs to be a specific type)
+#TODO: - Add stack with predefined variables, like BPM and Piano
 
 class Synthie:
 
@@ -20,7 +19,11 @@ class Synthie:
                 . . . . . . . cmaj7 b# b7 c3 . c4 ....
             ]
             IType: PIANO
-        ]""")
+            Horst: 3
+        ]
+        BPM: 70
+        Horst: 5
+        """)
 
         g = grammar.Grammar(l)
         g.parse()

@@ -16,7 +16,8 @@ class Lexer(object):
         "SEPARATE": r'\,',
         "BLOCK_OPEN": r'\[',
         "BLOCK_CLOSE": r']',
-        "COMMENT": r';.*'
+        "COMMENT": r';.*',
+        "CONST": r'const',
     }
 
     tokens = {
@@ -30,7 +31,8 @@ class Lexer(object):
         "BLOCK_CLOSE": r'\]',
         "IDENTIFIER": r'[a-zA-Z_][a-zA-Z_0-9]+',
         "NOTE_IDENTIFIER": r'(\.+)|([a-z]([0-9]|#|(maj|min)[0-9])?)',
-        "MUSIC_PIECE": r'([a-zA-Z_][a-zA-Z_0-9]+\.[a-zA-Z_][a-zA-Z_0-9]+)'
+        "MUSIC_PIECE": r'([a-zA-Z_][a-zA-Z_0-9]+\.[a-zA-Z_][a-zA-Z_0-9]+)',
+        "CONST": r'const'
     }
 
     tokenCnt = 0
@@ -66,12 +68,19 @@ class Lexer(object):
 
                 if re.match(self.tokens.get("KEYWORD"), tokn):
                     self.foundTokens.append(tok.Tok(tok.KEYWORD, tokn))
+
+                elif re.match(self.tokens.get("CONST"), tokn):
+                    self.foundTokens.append(tok.Tok(tok.CONST, tokn))
+
                 elif re.match(self.tokens.get("VALUE"), tokn):
                     self.foundTokens.append(tok.Tok(tok.VALUE, tokn))
+
                 elif re.match(self.tokens.get("NOTE_IDENTIFIER"), tokn):
                     self.foundTokens.append(tok.Tok(tok.NOTE_IDENTIFIER, tokn))
+
                 elif re.match(self.tokens.get("MUSIC_PIECE"), tokn):
                     self.foundTokens.append(tok.Tok(tok.MUSIC_PIECE, tokn))
+
                 elif re.match(self.tokens.get("IDENTIFIER"), tokn):
                     self.foundTokens.append(tok.Tok(tok.IDENTIFIER, tokn))
                 else:

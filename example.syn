@@ -3,6 +3,7 @@ Play Example
 
 ;Assign global variables
 BPM: 80
+const BLA: 333
     Instrument Piano [
         Notes Intro [
             c3 c4 c3 . c7 a b# b7 . c3 c4 .. bmaj7
@@ -16,6 +17,7 @@ BPM: 80
         IType: PIANO    ;set the input type to be a piano
         MyVar: 3        ;MyVar is a local variable and will only be assigned to the current Instrument
         BPM: 111
+        BLA: 5
     ]
 
     Horst: 3

@@ -2,10 +2,10 @@
 import lexer
 import grammar
 import sys
+from playback import Playback
 
 #TODO: Would be nice to have variables for notes as well, i.e.  my_riff: [c3 c4 c3 . c4]
-#TODO:                                                          Notes Intro [ my_riff ]
-
+#                                                               Notes Intro [ my_riff ]
 
 class Synthie:
 
@@ -16,7 +16,12 @@ class Synthie:
         l.scan(data)
 
         g = grammar.Grammar(l)
-        g.parse()
+        status = g.parse()
+        if status:
+            """Begin playback"""
+            song = g.get_song()
+            instruments = g.get_instruments()
+            #playback = Playback()
 
 
 if __name__ == "__main__":

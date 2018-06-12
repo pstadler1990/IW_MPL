@@ -4,7 +4,7 @@ import collections
 
 from song import Song
 
-StatementReturn = collections.namedtuple('StatementReturn', 'identifier value')
+StatementReturn = collections.namedtuple('StatementReturn', 'identifier value const')
 
 """
 program:
@@ -15,9 +15,11 @@ program:
 statement:
     identifier assign value
     identifier assign identifier
+    Const identifier assign value
+    Const identifier assign identifier
     
 command:
-    keyword identifier
+    Play identifier
 
 block:
     keyword identifier [ statement(s) ]
@@ -26,7 +28,7 @@ block:
     keyword [ music_piece_list ]
 
 keyword:
-    (Instrument|Notes|Oscillator|Song)
+    (Instrument|Notes|Oscillator|Song|Play|Const)
 
 identifier:
     [a-zA-Z_][a-zA-Z_0-9]*
@@ -54,6 +56,7 @@ music_piece:
 class Grammar(object):
 
     def __init__(self, lexer):
+        self.errors = False
         self.lexer = lexer
         self.current_token = self.lexer.next()
         self.stack = {}
@@ -61,21 +64,23 @@ class Grammar(object):
         self.song_stack = {}
         self.current_local_stack_obj = None
         """Push important constants on the global stack"""
-        self.stack["PIANO"] = 1
-        self.stack["BASS"] = 2
-        self.stack["SYNTHESIZER"] = 3
-        self.stack["PLAY_SONG"] = ""
+        self.stack["PIANO"] = 1, True
+        self.stack["BASS"] = 2, True
+        self.stack["SYNTHESIZER"] = 3, True
+        """Push important variables on the global stack"""
+        self.stack["PLAY_SONG"] = ["", False]
+        self.stack["BPM"] = [80, False]  #default BPM
 
     def parse(self):
-        self.progm()
+        return self.progm()
 
     def progm(self):
-        errors = False
+        self.errors = False
         while self.lexer.hasNext():
             if self.current_token.token.typ == tok.IDENTIFIER:
                 """Add or update a global variable"""
-                identifier, value = self.statement()
-                self.stack[identifier] = value
+                identifier, value, const = self.statement()
+                self.stack[identifier] = [value, const]
             elif self.current_token.token.typ == tok.KEYWORD:
                 """Keyword Identifier"""
                 if self.current_token.token.value == 'Play':
@@ -86,41 +91,65 @@ class Grammar(object):
                     continue
                 """Keyword Identifier [ block ]"""
                 if not self.block():
-                    errors = True
+                    self.errors = True
                     break
+            elif self.current_token.token.typ == tok.CONST:
+                    """Const modifier"""
+                    identifier, value, const = self.statement()
+                    self.stack[identifier] = [value, const]
             else:
-                errors = True
+                self.errors = True
                 break
-        if not errors:
+        if not self.errors:
             print("End of file. SUCCESSFULLY parsed the file!")
+            return True
         else:
-            print("Found erros while parsing..")
+            print("Found errors while parsing..")
             print(self.stack)
             print(self.instrument_stack)
+            return False
 
     def statement(self):
         # statement:
         #   identifier assign value
         #   identifier assign identifier
+        is_const = False
+        was_const = False
+        if self.current_token.token.typ == tok.CONST:
+            is_const = True
+            self.current_token = self.lexer.eat(self.current_token.token.typ, tok.CONST)
+
         token_value = None
         token_identifier = str(self.current_token.token.value)
+
+        if self.lookup_local_var(token_identifier) is None:
+            if self.lookup_global_var(token_identifier) is not None:
+                if self.var_global_is_const(token_identifier) and not is_const:
+                    print("Error! Variable " + token_identifier + " is non-modifiable!")
+                    self.errors = True
+        else:
+            if self.var_local_is_const(token_identifier) and not is_const:
+                print("Error! Variable " + token_identifier + " is non-modifiable!")
+                self.errors = True
 
         self.current_token = self.lexer.eat(self.current_token.token.typ, tok.IDENTIFIER)
         self.current_token = self.lexer.eat(self.current_token.token.typ, tok.ASSIGN)
 
         if self.current_token.token.typ == tok.VALUE:
+            """Assign a value to the variable"""
             token_value = self.current_token.token.value
             self.current_token = self.lexer.eat(self.current_token.token.typ, tok.VALUE)
         elif self.current_token.token.typ == tok.IDENTIFIER:
+            """Assign the value of a given variable to the variable"""
             tmp_value = self.lookup_local_var(self.current_token.token.value)
             if tmp_value is None:
                 tmp_value = self.lookup_global_var(self.current_token.token.value)
                 if tmp_value is not None:
-                    token_value = tmp_value
+                    token_value = tmp_value[0]
             else:
-                token_value = tmp_value
+                token_value = tmp_value[0]
             self.current_token = self.lexer.eat(self.current_token.token.typ, tok.IDENTIFIER)
-        return StatementReturn(identifier=token_identifier, value=token_value)
+        return StatementReturn(identifier=token_identifier, value=token_value, const=is_const)
 
     def block(self):
         # block:
@@ -150,9 +179,9 @@ class Grammar(object):
         while self.current_token.token.typ in (tok.IDENTIFIER, tok.KEYWORD, tok.NOTE_IDENTIFIER, tok.MUSIC_PIECE):
             # Case 1: keyword identifier[ statement(s) ]
             if self.current_token.token.typ == tok.IDENTIFIER:
-                identifier, value = self.statement()
+                identifier, value, const = self.statement()
                 if self.current_local_stack_obj is not None:
-                    self.current_local_stack_obj.variables[identifier] = value
+                    self.current_local_stack_obj.variables[identifier] = [value, const]
             # Case 2: keyword identifier[ block(s) ]
             elif self.current_token.token.typ == tok.KEYWORD:
                 self.block()
@@ -230,6 +259,12 @@ class Grammar(object):
         if self.current_local_stack_obj is not None:
             return self.current_local_stack_obj.variables.get(identifier)
 
+    def var_local_is_const(self, identifier):
+        return self.lookup_local_var(identifier)[1]
+
+    def var_global_is_const(self, identifier):
+        return self.lookup_global_var(identifier)[1]
+
     def lookup_piece(self, instrument, piece):
         try:
             for i in self.instrument_stack[instrument].notes:
@@ -237,3 +272,10 @@ class Grammar(object):
                     return True
         except Exception:
             return False
+
+    def get_song(self):
+        if self.stack["PLAY_SONG"] is not "":
+            return self.song_stack[self.stack["PLAY_SONG"]]
+
+    def get_instruments(self):
+        return self.instrument_stack

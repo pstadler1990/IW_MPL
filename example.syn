@@ -1,8 +1,5 @@
-
-Play Example
-
 ;Assign global variables
-BPM: 80
+BPM: 85
 const BLA: 333
     Instrument Piano [
         Notes Intro [
@@ -17,11 +14,10 @@ const BLA: 333
         IType: PIANO    ;set the input type to be a piano
         MyVar: 3        ;MyVar is a local variable and will only be assigned to the current Instrument
         BPM: 111
-        BLA: 5
     ]
 
     Horst: 3
-    Typ_2: BASS
+    Typ_2: SYNTHESIZER
     MYVARIABLE: Horst
 
     Instrument Harp [
@@ -36,4 +32,6 @@ Song Example [
 ]
 
 Song Beethoven [ Piano.Outro + Harp.Intro, Harp.Intro, Harp.Intro + Piano.Intro, Piano.Outro ]
+
+Play Example
 

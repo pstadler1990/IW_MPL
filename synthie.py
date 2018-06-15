@@ -21,7 +21,9 @@ class Synthie:
             """Begin playback"""
             song = g.get_song()
             instruments = g.get_instruments()
-            #playback = Playback()
+            bpm = g.stack["BPM"]
+            playback = Playback(song, instruments, bpm)
+            playback.play()
 
 
 if __name__ == "__main__":

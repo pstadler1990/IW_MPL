@@ -1,5 +1,5 @@
 ;Assign global variables
-BPM: 85
+BPM: 200
 const BLA: 333
     Instrument Piano [
         Notes Intro [
@@ -28,7 +28,7 @@ const BLA: 333
     ]
 
 Song Example [
-    Piano.Intro + Harp.Intro + Harp.Intro, Harp.Intro, Piano.Chorus + Piano.Outro
+    Piano.Intro + Harp.Intro, Harp.Intro, Piano.Outro
 ]
 
 Song Beethoven [ Piano.Outro + Harp.Intro, Harp.Intro, Harp.Intro + Piano.Intro, Piano.Outro ]

@@ -23,7 +23,14 @@ class Synthie:
             instruments = g.get_instruments()
             bpm = g.stack["BPM"]
             playback = Playback(song, instruments, bpm)
-            playback.play()
+            if playback.convert_song() is True:
+                if playback.play() is True:
+                    print("Playback finished.")
+                else:
+                    print("There was an ERROR while playing your file!")
+            else:
+                print("There was an ERROR while converting your song!")
+
 
 
 if __name__ == "__main__":

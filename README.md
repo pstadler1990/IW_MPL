@@ -39,6 +39,10 @@ These constants can be used as a variable for your instrument's IType variable:
 `IType: PIANO`
 assigns the piano instrument to your current instrument block.
 
+However, you can modify each of your variables by prepending the `const` keyword, like:
+`const MyVar: 3`
+A constant can only be assigned once and never changed again.
+
 ## Comments
 You can write comments by using a semicolon.
 

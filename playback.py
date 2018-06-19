@@ -1,6 +1,7 @@
 from musical_instrument import MusicalInstrument
 from time import sleep
 from math import ceil
+from sound import Sound
 
 
 class Playback:
@@ -11,7 +12,9 @@ class Playback:
         self.instruments = instruments
         self.bpm = bpm[0]
         self.playback_list = []
-
+        self.delay_time_ms = ceil(60000 / int(self.bpm))
+        self.delay_time_s = self.delay_time_ms / 1000
+        self.sound = Sound(len(instruments), delay_s=self.delay_time_s)
 
     def convert_song(self):
         #TODO: Add check, if the notes are already in the current sequence, if they are added by a + (plus)
@@ -29,7 +32,7 @@ class Playback:
                         tmp_itype = self.get_instrument_type_by_name(tmp_instrument)
                         if tmp_itype is not -1:
                             instrument_dict[tmp_instrument] = tmp_itype
-                            instrument = MusicalInstrument(tmp_itype, tmp_instrument)
+                            instrument = MusicalInstrument(tmp_itype, tmp_instrument, self.sound)
                             self.playback_list.append(instrument)
                             current_instrument = instrument
                         else:
@@ -41,6 +44,9 @@ class Playback:
                     notes = self.get_notes_by_instrument_and_piece(tmp_instrument, tmp_piece)
                     if current_instrument is not None:
                         current_instrument.notes[str(seq)] = notes
+                        """Preload the sound file (if it is not a rest .)"""
+                        for n in notes:
+                            self.sound.preload_sound(n)
             seq += 1
         return True
 
@@ -72,8 +78,6 @@ class Playback:
     def play(self):
         bar = 0
         seq = 0
-        delay_time_ms = ceil(60000 / int(self.bpm))
-        delay_time_s = delay_time_ms / 1000
         max_notes = self.find_max_number_of_notes_in_piece(seq)
         print("Starting playback")
 
@@ -89,8 +93,8 @@ class Playback:
 
                 if bar >= max_notes:
                     seq += 1
-                    bar = 0
+                    bar = -1
                     max_notes = self.find_max_number_of_notes_in_piece(seq)
             bar += 1
-            sleep(delay_time_s)
+            sleep(self.delay_time_s)
         return True

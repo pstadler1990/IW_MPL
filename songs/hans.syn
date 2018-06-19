@@ -1,0 +1,18 @@
+;Hänschen Klein
+BPM: 110
+const InsType: PIANO
+    Instrument Piano [
+        Notes Hans [
+            g3 e3 e3 . f3 d3 d3 . c3 d3 e3 f3 g3 g3 g3 . g3 e3 e3 .
+            f3 d3 d3 . c3 e3 g3 g3 c3 . . d3 d3 d3 d3 d3 e3 f3 .
+            e3 e3 e3 e3 e3 f3 g3 . g3 e3 e3 . f3 d3 d3 . c3 e3
+            g3 g3 c3 .
+        ]
+        IType: InsType    ;set the input type to be a piano from a global variable
+    ]
+
+Song Hans [
+    Piano.Hans
+]
+
+Play Hans

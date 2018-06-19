@@ -1,0 +1,20 @@
+;Alle meine Entchen
+BPM: 110
+    Instrument Piano [
+        Notes Strophe1 [
+            c3 d3 e3 f3 g3 . g3 . a3 a3 a3 a3 g3
+        ]
+        Notes Strophe2 [
+           a3 a3 a3 a3 g3 . . f3 f3 f3 f3 e3 . e3
+        ]
+        Notes Strophe3 [
+            d3 d3 d3 d3  c3 . . . .
+        ]
+        IType: PIANO    ;set the input type to be a piano
+    ]
+
+Song Entchen [
+    Piano.Strophe1, Piano.Strophe2, Piano.Strophe3
+]
+
+Play Entchen

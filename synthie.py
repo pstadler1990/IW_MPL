@@ -35,7 +35,7 @@ class Synthie:
 
 
 if __name__ == "__main__":
-    sys.argv.append("songs/hans.syn")
+    sys.argv.append("songs/mona.syn")
     if len(sys.argv) > 1:
         s = Synthie(str(sys.argv[1]))
     else:
@@ -43,4 +43,4 @@ if __name__ == "__main__":
         print("----------------------------")
         print("Usage: ")
         print("python3 synthie.py <your-file.syn>")
-        print("Example: python3 synthie.py example.syn")
+        print("Example: python3 synthie.py data/entchen.syn")

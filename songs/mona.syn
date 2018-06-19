@@ -1,0 +1,14 @@
+BPM: 120
+Instrument Mona [
+    Notes Intro [ c4 c5 c3 c2 c1 d1 . . d2 f4 f3 ]
+    IType: PIANO
+]
+
+Instrument FetterBass [
+    Notes Bass [ c2 c3 c2 c1 c1 c1 . . d1 f2 f1 ]
+    IType: PIANO
+]
+
+Song MonaSong [Mona.Intro + FetterBass.Bass]
+
+Play MonaSong

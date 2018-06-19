@@ -7,9 +7,10 @@ class MusicalInstrument:
         self.sound = sound_ref
 
     def play(self, seq, bar):
-        if bar >= len(self.notes[str(seq)]): return False
+        if bar >= len(self.notes[str(seq)]):
+            return False
         try:
-            print(self.name + ": " + str(self.notes[str(seq)][bar]))
+            #print(self.name + ": " + str(self.notes[str(seq)][bar]))
             return self.sound.play_sound(str(self.notes[str(seq)][bar]))
         except IndexError:
             return False

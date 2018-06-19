@@ -1,10 +1,10 @@
 from pygame import mixer
-from time import sleep
+
 
 class Sound:
 
     def __init__(self, number_of_instruments, delay_s):
-        self.number_of_channels = number_of_instruments * 4     #Create enough channels for a clean playback, so multiply real amount by 4
+        self.number_of_channels = number_of_instruments * 16     #Create enough channels for a clean playback, so multiply real amount by 4
         mixer.init()
         mixer.set_num_channels(self.number_of_channels)
         self.sound_dict = {}

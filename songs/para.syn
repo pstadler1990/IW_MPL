@@ -1,0 +1,19 @@
+;This example shows how to play two instruments at the same time (in parallel)
+BPM: 110
+    Instrument Piano [
+        Notes Strophe1 [
+            c3 d3 e3 f3 g3 g3 a3 a4 b3 b4
+        ]
+        IType: PIANO    ;set the input type to be a piano
+    ]
+
+    Instrument Bass [
+        Notes Strophe1 [c2 c2 c2 c2 c2 . c2 c2 c2 .]
+        IType: PIANO
+    ]
+
+Song Entchen [
+    Piano.Strophe1 + Bass.Strophe1
+]
+
+Play Entchen

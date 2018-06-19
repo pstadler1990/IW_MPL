@@ -67,9 +67,9 @@ class Grammar(object):
         self.stack["PIANO"] = 1, True
         self.stack["BASS"] = 2, True
         self.stack["SYNTHESIZER"] = 3, True
+        self.stack["PLAY_SONG"] = "", True
         """Push important variables on the global stack"""
-        self.stack["PLAY_SONG"] = ["", False]
-        self.stack["BPM"] = [80, False]  #default BPM
+        self.stack["BPM"] = 80, False  #default BPM
 
     def parse(self):
         return self.progm()

@@ -59,7 +59,7 @@ class Playback:
             if i.name == instrument:
                 return i
 
-    def find_max_number_of_instrument_in_piece(self, seq):
+    def find_max_number_of_notes_in_piece(self, seq):
         max_nr = 0
         for i in self.playback_list:
             try:
@@ -74,7 +74,7 @@ class Playback:
         seq = 0
         delay_time_ms = ceil(60000 / int(self.bpm))
         delay_time_s = delay_time_ms / 1000
-        max_notes = self.find_max_number_of_instrument_in_piece(seq)
+        max_notes = self.find_max_number_of_notes_in_piece(seq)
         print("Starting playback")
 
         while seq <= self.sequences:
@@ -90,7 +90,7 @@ class Playback:
                 if bar >= max_notes:
                     seq += 1
                     bar = 0
-                    max_notes = self.find_max_number_of_instrument_in_piece(seq)
+                    max_notes = self.find_max_number_of_notes_in_piece(seq)
             bar += 1
             sleep(delay_time_s)
         return True

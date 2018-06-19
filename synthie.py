@@ -16,6 +16,7 @@ class Synthie:
         l.scan(data)
 
         g = grammar.Grammar(l)
+        print("Start parsing.")
         status = g.parse()
         if status:
             """Begin playback"""

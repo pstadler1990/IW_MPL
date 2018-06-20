@@ -59,14 +59,17 @@ Instrument Piano [
             c3 d3 e3 f3 g3 . g3 . a3 a3 a3 a3 g3
         ]
 ]
+```
 
 Arranging songs
 ===============
 To create a song, you have to arrange a sequence of music pieces together. This can be done with the Song keyword:
 
-`Song Example [
+```
+Song Example [
     Piano.Intro + Harp.Intro, Harp.Intro, Piano.Chorus + Piano.Outro
-]`
+]
+```
 
 where a plus sign (+) plays multiple pieces in parallel, while a comma (,) starts a new sequence.
 

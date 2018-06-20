@@ -1,6 +1,9 @@
 # IW_MPL
 Informationswissenschaft Python Projekt: Music Programming Language
 
+## Examples
+Example songs and scripts can be found in the `/songs/` folder.
+
 What it is
 ==========
 IW_MPL is a first approach to a music (or audio) programming language (Wikipedia https://en.wikipedia.org/wiki/List_of_audio_programming_languages). It is a very simple concept and only includes some basic functionality, but it is fully usable for creating and playing easy songs.

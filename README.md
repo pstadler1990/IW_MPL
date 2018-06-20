@@ -1,6 +1,83 @@
 # IW_MPL
 Informationswissenschaft Python Projekt: Music Programming Language
 
+What it is
+==========
+IW_MPL is a first approach to a music (or audio) programming language (Wikipedia https://en.wikipedia.org/wiki/List_of_audio_programming_languages). It is a very simple concept and only includes some basic functionality, but it is fully usable for creating and playing easy songs.
+
+What it's not
+=============
+Unlike ChucK (http://chuck.cs.princeton.edu/), IW_MPL does not contain any programming logic or conditional expressions, like if or while. Basically, IW_MPL is just a small interpreted language that gets converted into notes.
+
+How to use
+==========
+A valid IW_MPL script consists of (at least) three parts:
+1. An instrument
+2. Some notes
+3. A Song
+
+Creating an instrument
+======================
+Use the `Instrument` keyword to create a new instrument block.
+IW_MPL expects to find an identifier after the `Instrument` keyword, like `Instrument Piano`. 
+To specify your instrument, you need to encapsulate it with a block statement `[ ]` (everything between two square brackets is considered a block).
+
+Example:
+```
+ Instrument Piano [
+    ; your instrument details    
+ ]
+```
+
+Adding notes
+============
+Each instrument must at least provide one list of notes, identified by the `Notes` keyword, also encapsulated by a block.
+You also need to give your notes an identifier. 
+
+Example:
+```
+Instrument Piano [
+        Notes MyNotes [
+            ; your notes here
+        ]
+]
+```
+
+Notes
+=====
+Inside a notes block, you are free to write note names. 
+Currently, IW_MPL only supports the following notes:
+```
+c1 c2 c3 c4 c5 d1 d2 d3 d4 e1 e2 e3 d4 f1 f2 f3 f4 g1 g2 g3 g4 a1 a2 a3 a4 b1 b2 b3 b4
+```
+and rest `.` (a dot is basically just a skip-the-current-bar note)
+
+Example:
+```
+Instrument Piano [
+        Notes MyNotes [
+            c3 d3 e3 f3 g3 . g3 . a3 a3 a3 a3 g3
+        ]
+]
+
+Arranging songs
+===============
+To create a song, you have to arrange a sequence of music pieces together. This can be done with the Song keyword:
+
+`Song Example [
+    Piano.Intro + Harp.Intro, Harp.Intro, Piano.Chorus + Piano.Outro
+]`
+
+where a plus sign (+) plays multiple pieces in parallel, while a comma (,) starts a new sequence.
+
+You refer to a specific music piece by writing the instrument's name and the name of the notelist, concatenated by a dot (.).
+
+PLAY
+====
+Finally, use the `Play` keyword, to play a specific song.
+Example: `Play Example` where example is the name of the song.
+
+
 Important notes
 ===============
 Variable names MUST start with a CAPITAL letter!
@@ -52,13 +129,3 @@ code after a comment will also be ignored!
 Example comment:
 `BPM: 80    ;This is my example comment on this variable assignment`
 
-## Arranging songs
-To create a song, you have to arrange a sequence of music pieces together. This can be done with the Song keyword:
-
-`Song Example [
-    Piano.Intro + Harp.Intro, Harp.Intro, Piano.Chorus + Piano.Outro
-]`
-
-where a plus sign (+) plays multiple pieces in parallel, while a comma (,) starts a new sequence.
-
-You refer to a specific music piece by writing the instrument's name and the name of the notelist, concatenated by a dot (.).

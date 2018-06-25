@@ -4,6 +4,11 @@ Informationswissenschaft Python Projekt: Music Programming Language
 ## Examples
 Example songs and scripts can be found in the `/songs/` folder.
 
+## Dependencies
+python3
+pygame (for audio output)
+
+
 What it is
 ==========
 IW_MPL is a first approach to a music (or audio) programming language (Wikipedia https://en.wikipedia.org/wiki/List_of_audio_programming_languages). It is a very simple concept and only includes some basic functionality, but it is fully usable for creating and playing easy songs.
@@ -70,13 +75,16 @@ To create a song, you have to arrange a sequence of music pieces together. This 
 
 ```
 Song Example [
-    Piano.Intro + Harp.Intro, Harp.Intro, Piano.Chorus + Piano.Outro
+    Piano.Intro + Harp.Intro, Harp.Intro, Piano.Chorus
 ]
 ```
 
 where a plus sign (+) plays multiple pieces in parallel, while a comma (,) starts a new sequence.
 
 You refer to a specific music piece by writing the instrument's name and the name of the notelist, concatenated by a dot (.).
+
+*Note*: You can only play two pieces of different instruments at the same time, so you can't write Piano.Intro + Piano.Outro, for example!
+
 
 PLAY
 ====

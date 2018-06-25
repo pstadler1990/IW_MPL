@@ -35,7 +35,7 @@ class Synthie:
 
 
 if __name__ == "__main__":
-    sys.argv.append("songs/mona.syn")
+    sys.argv.append("songs/dog.syn")
     if len(sys.argv) > 1:
         s = Synthie(str(sys.argv[1]))
     else:

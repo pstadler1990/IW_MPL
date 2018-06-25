@@ -1,0 +1,15 @@
+;For Merlin the sweet dog
+BPM: 200
+Instrument Piano [
+    Notes Intro [
+        e4 e4 e4 e4 e4 e4 c3 c3 c3 . e4 e4 g3 a3
+        c3 . . . e4 e4 e4 e4 c3 . c3 .
+        e4 e4 g3 a3 c3 . . . e4 e4 e4
+        d4 d4 d4 d4 d4 d4 d4 d4 e4 d4 c3 d3 c3 c3 .
+    ]
+    IType: PIANO
+]
+
+Song Dog [Piano.Intro]
+
+Play Dog

@@ -46,6 +46,7 @@ class Lexer(object):
         t = 0
         tokn = ""
         blockLevel = 0
+        inputString += "\n"
 
         while t < len(inputString):
 
